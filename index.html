@@ -16,6 +16,63 @@
         <title>shopping cart</title>
     </head>
     <body>
+        <section class="navbar">
+            <div class="navbar-center">
+                <span class="nav-icon">
+                    <i class="fas fa-bars"></i>
+                </span>
+                <span class="nav-title">لوازم خانگي</span>
+                <div class="cart-btn">
+                    <span class="nav-icon">
+                        <i class="fas fa-cart-plus"></i>
+                    </span>
+                    <div class="cart-items">0</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="products">
+            <div class="product-title">
+                <h2>محصولات ما</h2>
+            </div>
+            <div class="product-center">
+                <!-- <div class="product">
+                    <img src="assets/images/product-1.jpeg" alt="" />
+                    <div class="caption-product" dir ="rtl">
+                        <div class="price-product">10.99$</div>
+                        <div class="name-product">FH274 تخت خواب دونفره مدل</div>
+                    </div>
+                    <button class="btn" data-id ="${item.id}">add to cart</button>
+                </div> -->
+            </div>
+        </section>
+
+        <section class="cart-center">
+            <div class="backdrop"></div>
+            <div class="cart">
+                <h3 class="cart-title">سبد خريد</h3>
+                <div class="cart-content">
+                    <div class="cart-item">
+                        <img src="assets/images/product-1.jpeg" class="cart-item-img" />
+                        <div class="cart-img-desc">
+                            <h4>تخت خواب دو نفره</h4>
+                            <h5 dir="rtl">10 ميليون تومان</h5>
+                        </div>
+                        <div class="cart-item-controller">
+                            <i class="fas fa-chevron-up"></i>
+                            <p>1</p>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <i class="fas fa-trash"></i>
+                    </div>
+                    <div class="cart-footer">
+                        <span class="cart-total">جمع کل : 10 ميليون تومان </span>
+                        <button class="btn clear-cart">پاک کردن</button>
+                        <button class="btn cart-item-confirm">بستن</button>
+                    </div>
+                </div>
+            </div>
+        </section>
         <script type="module" src="js/index.js"></script>
     </body>
 </html>
