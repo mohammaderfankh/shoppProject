@@ -5,6 +5,7 @@ const confirm = document.querySelector(".cart-item-confirm");
 const productsDOM = document.querySelector(".product-center");
 const cartItems = document.querySelector(".cart-items");
 const cartTotal = document.querySelector(".cart-total");
+const cartContent = document.querySelector(".cart-content");
 
 import { productsData } from "./products.js";
 let cart = [];
@@ -47,12 +48,13 @@ class UI {
                 e.target.innerText = "In Cart";
                 e.target.disabled = true;
                 // get product from products
-                const addedProduct = Storage.getProduct(id);
+                const addedProduct = { ...Storage.getProduct(id), quantity: 1 };
                 // add to cart
-                cart = [...cart, { ...addedProduct, quantity: 1 }];
+                cart = [...cart, addedProduct];
                 // save cart t o localStorage
                 Storage.saveCart(cart);
                 this.setCartValue(cart);
+                this.addCartItem(addedProduct);
             });
         });
     }
@@ -63,8 +65,32 @@ class UI {
             return acc + curr.quantity * curr.price;
         }, 0);
 
-        cartTotal.innerText = ` جمع کل : ${totalPrice}ميليون تومان      `;
+        cartTotal.innerText = ` جمع کل : ${totalPrice} ميليون تومان`;
         cartItems.innerText = tempCartItem;
+    }
+    addCartItem(cartItem) {
+        const div = document.createElement("div");
+        div.classList.add("cart-item");
+        div.innerHTML = `<img src= ${cartItem.imageUrl} class="cart-item-img"/>
+        <div class="cart-img-desc">
+            <h4> ${cartItem.title}</h4>
+            <h5 dir="rtl">${cartItem.price} ميليون تومان</h5>
+        </div>
+        <div class="cart-item-controller">
+            <i class="fas fa-chevron-up"></i>
+            <p>${cartItem.quantity}</p>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <i class="fas fa-trash"></i>`;
+        cartContent.appendChild(div);
+    }
+    setupApp() {
+        // get cart from storage
+        cart = Storage.getCart() || [];
+        // addCart item
+        cart.forEach((cartItem) => this.addCartItem(cartItem));
+        // setvalue
+        this.setCartValue(cart);
     }
 }
 
@@ -81,12 +107,17 @@ class Storage {
     static saveCart(cart) {
         localStorage.setItem("cart", JSON.stringify(cart));
     }
+
+    static getCart() {
+        return JSON.parse(localStorage.getItem("cart"));
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     const products = new Products();
     const productsData = products.getProduct();
     const ui = new UI();
+    ui.setupApp();
     ui.displayProducts(productsData);
     ui.getAddToCartBtns();
     Storage.saveProducts(productsData);
