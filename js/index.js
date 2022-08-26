@@ -3,6 +3,8 @@ const cartModal = document.querySelector(".cart");
 const backDrop = document.querySelector(".backdrop");
 const confirm = document.querySelector(".cart-item-confirm");
 const productsDOM = document.querySelector(".product-center");
+const cartItems = document.querySelector(".cart-items");
+const cartTotal = document.querySelector(".cart-total");
 
 import { productsData } from "./products.js";
 let cart = [];
@@ -20,7 +22,7 @@ class UI {
             result += `<div class="product">
             <img src=${item.imageUrl} alt="" />
             <div class="caption-product" dir ="rtl">
-                <div class="price-product">${item.price}</div>
+                <div class="price-product">${item.price} ميليون تومان</div>
                 <div class="name-product">${item.title}</div>
             </div>
             <button class="btn add-to-cart" data-id ="${item.id}">
@@ -50,8 +52,19 @@ class UI {
                 cart = [...cart, { ...addedProduct, quantity: 1 }];
                 // save cart t o localStorage
                 Storage.saveCart(cart);
+                this.setCartValue(cart);
             });
         });
+    }
+    setCartValue(cart) {
+        let tempCartItem = 0;
+        const totalPrice = cart.reduce((acc, curr) => {
+            tempCartItem += curr.quantity;
+            return acc + curr.quantity * curr.price;
+        }, 0);
+
+        cartTotal.innerText = ` جمع کل : ${totalPrice}ميليون تومان      `;
+        cartItems.innerText = tempCartItem;
     }
 }
 
