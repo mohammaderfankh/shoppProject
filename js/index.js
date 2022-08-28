@@ -6,9 +6,11 @@ const productsDOM = document.querySelector(".product-center");
 const cartItems = document.querySelector(".cart-items");
 const cartTotal = document.querySelector(".cart-total");
 const cartContent = document.querySelector(".cart-content");
+const clearCart = document.querySelector(".clear-cart");
 
 import { productsData } from "./products.js";
 let cart = [];
+let buttonsDOM = [];
 
 class Products {
     getProduct() {
@@ -34,10 +36,11 @@ class UI {
         });
         productsDOM.innerHTML = result;
     }
+
     getAddToCartBtns() {
-        const addToCartBtns = document.querySelectorAll(".add-to-cart");
-        const buttons = [...addToCartBtns];
-        buttons.forEach((btn) => {
+        const addtocartBtns = [...document.querySelectorAll(".add-to-cart")];
+        buttonsDOM = addtocartBtns;
+        addtocartBtns.forEach((btn) => {
             const id = btn.dataset.id;
             const isInCart = cart.find((p) => p.id === id);
             if (isInCart) {
@@ -45,7 +48,7 @@ class UI {
                 btn.disabled = true;
             }
             btn.addEventListener("click", (e) => {
-                e.target.innerText = "In Cart";
+                e.target.innerText = "در سبد موجود شد";
                 e.target.disabled = true;
                 // get product from products
                 const addedProduct = { ...Storage.getProduct(id), quantity: 1 };
@@ -58,6 +61,7 @@ class UI {
             });
         });
     }
+
     setCartValue(cart) {
         let tempCartItem = 0;
         const totalPrice = cart.reduce((acc, curr) => {
@@ -68,6 +72,7 @@ class UI {
         cartTotal.innerText = ` جمع کل : ${totalPrice} ميليون تومان`;
         cartItems.innerText = tempCartItem;
     }
+
     addCartItem(cartItem) {
         const div = document.createElement("div");
         div.classList.add("cart-item");
@@ -77,11 +82,11 @@ class UI {
             <h5 dir="rtl">${cartItem.price} ميليون تومان</h5>
         </div>
         <div class="cart-item-controller">
-            <i class="fas fa-chevron-up"></i>
+            <i class="fas fa-chevron-up" data-id=${cartItem.id}></i>
             <p>${cartItem.quantity}</p>
-            <i class="fas fa-chevron-down"></i>
+            <i class="fas fa-chevron-down" data-id=${cartItem.id}></i>
         </div>
-        <i class="fas fa-trash"></i>`;
+        <i class="fas fa-trash" data-id=${cartItem.id}></i>`;
         cartContent.appendChild(div);
     }
     setupApp() {
@@ -91,6 +96,37 @@ class UI {
         cart.forEach((cartItem) => this.addCartItem(cartItem));
         // setvalue
         this.setCartValue(cart);
+    }
+
+    cartLogic() {
+        clearCart.addEventListener("click", () => {
+            this.clearCart();
+        });
+    }
+
+    clearCart() {
+        cart.forEach((item) => this.removeItem(item.id));
+        while (cartContent.children.length) {
+            cartContent.removeChild(cartContent.children[0]);
+        }
+        closeModal();
+    }
+
+    removeItem(id) {
+        cart = cart.filter((cItem) => cItem.id !== id);
+        this.setCartValue(cart);
+        Storage.saveCart(cart);
+
+        this.getSingleBtn(id);
+    }
+
+    getSingleBtn(id) {
+        const button = buttonsDOM.find((btn) => parseInt(btn.dataset.id) === parseInt(id));
+        button.innerHTML = `
+        <i class="fas fa-shopping-cart"></i>
+        خريد محصول
+        `;
+        button.disabled = false;
     }
 }
 
@@ -117,6 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const products = new Products();
     const productsData = products.getProduct();
     const ui = new UI();
+    ui.cartLogic();
     ui.setupApp();
     ui.displayProducts(productsData);
     ui.getAddToCartBtns();
