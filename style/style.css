@@ -206,8 +206,8 @@ body {
 
 .cart-content {
     padding: 1rem;
-    display: flex;
-    flex-direction: column-reverse;
+    /* display: flex;
+    flex-direction: column-reverse; */
 }
 
 .cart-item {
