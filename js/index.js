@@ -102,6 +102,35 @@ class UI {
         clearCart.addEventListener("click", () => {
             this.clearCart();
         });
+        cartContent.addEventListener("click", (event) => {
+            if (event.target.classList.contains("fa-chevron-up")) {
+                const addQuantity = event.target;
+                const addItem = cart.find((cItem) => cItem.id == addQuantity.dataset.id);
+                // console.log(addItem)
+                addItem.quantity++;
+                this.setCartValue(cart);
+                Storage.saveCart(cart);
+                addQuantity.nextElementSibling.innerHTML = addItem.quantity;
+            } else if (event.target.classList.contains("fa-chevron-down")) {
+                const subQuantity = event.target;
+                const subItem = cart.find((cItem) => cItem.id == subQuantity.dataset.id);
+                subItem.quantity--;
+                if (subItem.quantity === 0) {
+                    this.removeItem(subItem.id);
+                    cartContent.removeChild(subQuantity.parentElement.parentElement);
+                }
+                this.setCartValue(cart);
+                Storage.saveCart(cart);
+                subQuantity.previousElementSibling.innerHTML = subItem.quantity;
+            } else if (event.target.classList.contains("fa-trash")) {
+                const removeChild = event.target;
+                const removedChild = cart.find((cItem) => cItem.id == removeChild.dataset.id);
+                this.removeItem(removedChild.id);
+                this.setCartValue(cart);
+                Storage.saveCart(cart);
+                cartContent.removeChild(removeChild.parentElement);
+            }
+        });
     }
 
     clearCart() {
